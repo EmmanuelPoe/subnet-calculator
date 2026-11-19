@@ -161,7 +161,7 @@
         const size = Math.pow(2, 32 - pfx);
         const net = current; const bc = current + size - 1;
         current += size;
-        return `<tr><td>${s.name}</td><td>${intToIp(net)}/${pfx}</td><td>${intToIp(net+1)} – ${intToIp(bc-1)}</td><td>${size - 2}</td><td>${s.hosts}</td></tr>`;
+        return `<tr><td>${String(s.name).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</td><td>${intToIp(net)}/${pfx}</td><td>${intToIp(net+1)} – ${intToIp(bc-1)}</td><td>${size - 2}</td><td>${s.hosts}</td></tr>`;
       });
       document.getElementById('vlsm-results').innerHTML = `<table><thead><tr><th>Name</th><th>Network</th><th>Host Range</th><th>Usable</th><th>Required</th></tr></thead><tbody>${rows.join('')}</tbody></table>`;
     }

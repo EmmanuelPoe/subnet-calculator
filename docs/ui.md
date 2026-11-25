@@ -9,7 +9,7 @@
 
 ## Element IDs used by the script
 
-`cidr-input`, `cidr-error`, `cidr-results`, `r-network`, `r-broadcast`, `r-first`, `r-last`, `r-hosts`, `r-mask`, `r-wildcard`, `r-prefix`, `r-binary`, `vlsm-network`, `vlsm-rows`, `add-subnet`, `vlsm-results`, `split-network`, `split-count`, `split-results`. Renaming any of them requires updating the script.
+`cidr-input`, `cidr-error`, `cidr-results`, `r-network`, `r-broadcast`, `r-first`, `r-last`, `r-hosts`, `r-mask`, `r-wildcard`, `r-prefix`, `r-binary`, `vlsm-network`, `vlsm-rows`, `add-subnet`, `vlsm-error`, `vlsm-results`, `split-network`, `split-count`, `split-error`, `split-results`. Renaming any of them requires updating the script.
 
 ## Visual language
 
@@ -18,6 +18,6 @@ Dark theme, hard-coded colors (no CSS variables): background `#0f1923`, cards `#
 ## Conventions for changes
 
 - Add new tools as a fourth tab: a `.tab` button, a `#tab-<name>` panel, and the name in the `switchTab` array.
-- Inline errors use the `.error` paragraph pattern (CIDR tab). VLSM and Split use `alert()`; prefer the inline pattern for new work.
+- Errors are inline `.error` paragraphs under each tab's button, set with `showError(id, message)`. Do not use `alert()`.
 - Keep it usable on a phone: test at 375px wide.
 - Accessibility gaps worth fixing: the VLSM row label is a `<span>`, not a `<label>`; tabs are plain buttons without `role="tab"`/`aria-selected`.

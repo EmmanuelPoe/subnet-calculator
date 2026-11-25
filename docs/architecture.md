@@ -8,7 +8,9 @@
 |---|---|
 | `ipToInt(ip)` | dotted quad → unsigned 32-bit integer |
 | `intToIp(n)` | unsigned integer → dotted quad |
-| `parseCIDR(cidr)` | validates `a.b.c.d/p` (4 octets 0-255, prefix 0-32) and returns `{ip, pfx, ipInt, mask, network, broadcast}`, or `null` if invalid |
+| `parseCIDR(cidr)` | strict regex `^\d{1,3}(\.\d{1,3}){3}/\d{1,2}$` (surrounding whitespace trimmed), octets ≤ 255, prefix ≤ 32; returns `{ip, pfx, ipInt, mask, network, broadcast}`, or `null` |
+| `escapeHtml(text)` | escapes `& < > " '` for anything inserted with `innerHTML` |
+| `showError(id, message)` | shows/hides an inline `.error` paragraph (empty message hides it) |
 | `toBinary(ipInt)` | dotted binary string |
 
 Masks are computed as `(0xFFFFFFFF << (32 - pfx)) >>> 0`, with `pfx === 0` special-cased because a 32-bit shift is a no-op in JavaScript.
@@ -20,14 +22,12 @@ Masks are computed as `(0xFFFFFFFF << (32 - pfx)) >>> 0`, with `pfx === 0` speci
 - First/last host are network+1 / broadcast-1, except /31 and /32 where they equal network/broadcast.
 
 ### VLSM (`addVLSMRow`, `calcVLSM`)
-- Reads all `.vlsm-name` and `.vlsm-hosts` inputs, sorts requirements by host count (largest first), and allocates sequentially from the base network address.
+- Pairs each row's name with its own host count (unnamed rows become `Subnet <n>`), drops rows without hosts, sorts largest first, and allocates sequentially from the base network address — largest-first keeps each block aligned to its size.
 - Prefix per subnet: the smallest block with `hosts + 2` addresses.
-- Output: a table rendered with `innerHTML`; the subnet name is HTML-escaped.
+- Requirements that would extend past the base broadcast address are skipped and listed in `#vlsm-error`; the rest are still shown.
+- Output: a table rendered with `innerHTML`; names go through `escapeHtml`.
 
 ### Split (`calcSplit`)
-- `bits = ceil(log2(N))`, `newPfx = base.pfx + bits`, refuses if `newPfx > 30`.
+- N must be a whole number 2-1024. `bits = ceil(log2(N))`, `newPfx = base.pfx + bits`; refuses (inline error) if `newPfx > 30`.
 - Always produces `2^bits` subnets (asking for 3 gives 4).
 
-## Known logic gaps
-
-See [testing.md](testing.md#known-bugs): VLSM does not check that allocations fit inside the base network, and empty host fields misalign names. `parseCIDR` accepts malformed octets such as `"1e1"` (computed as 1) because it validates with `isNaN` but converts with `parseInt`, and accepts prefixes such as `"24abc"`.

@@ -5,7 +5,7 @@ The app runs entirely in the browser, has no backend, stores nothing, and makes 
 ## Output rendering
 
 - CIDR results are written with `textContent` (safe).
-- VLSM and Split build HTML strings and assign them to `innerHTML`. The only free-text input, the VLSM subnet name, is escaped (`& < > " '`); every other interpolated value is computed from integers. Keep it that way: escape any new user-supplied string, or build rows with `document.createElement` + `textContent`.
+- VLSM and Split build HTML strings and assign them to `innerHTML`. The only free-text input, the VLSM subnet name, goes through `escapeHtml()`; every other interpolated value is computed from integers. Error messages are set with `textContent`. Keep it that way: escape any new user-supplied string, or build rows with `document.createElement` + `textContent`.
 - `addVLSMRow` uses `innerHTML` with a constant string only.
 
 ## Hosting
